@@ -2,21 +2,21 @@
 
 public class SynchronizeDirectory
 {
-
-    public static void Synchronize(string sourcePath, string replicaPath, string LogFilePath)
+    public static void Synchronize(string sourcePath, string replicaPath, string logFilePath)
     {
-        if (!File.Exists(LogFilePath))
+
+        if (!File.Exists(logFilePath))
         {
-            File.Create(LogFilePath);
+            File.Create(logFilePath);
         }
 
         // Ensure the replica directory exists
         if (!Directory.Exists(replicaPath))
         {
             Directory.CreateDirectory(replicaPath);
-            var message = $"Created directory: {replicaPath}";
+            var message = $"{DateTime.Now} - Created directory: {replicaPath}";
             Console.WriteLine(message);
-            File.AppendAllText(LogFilePath, message + Environment.NewLine);
+            File.AppendAllText(logFilePath, message + Environment.NewLine);
         }
 
         // Synchronize files
@@ -32,9 +32,9 @@ public class SynchronizeDirectory
             if (!File.Exists(replicaFile) || File.GetLastWriteTime(sourceFile) > File.GetLastWriteTime(replicaFile))
             {
                 File.Copy(sourceFile, replicaFile, true);
-                var message = $"Copied file: {sourceFile} to {replicaFile}";
+                var message = $"{DateTime.Now} - Copied file: {sourceFile} to {replicaFile}";
                 Console.WriteLine(message);
-                File.AppendAllText(LogFilePath, message + Environment.NewLine);
+                File.AppendAllText(logFilePath, message + Environment.NewLine);
             }
         }
 
@@ -47,9 +47,9 @@ public class SynchronizeDirectory
             if (!File.Exists(sourceFile))
             {
                 File.Delete(replicaFile);
-                var message = $"Deleted file: {replicaFile}";
+                var message = $"{DateTime.Now} - Deleted file: {replicaFile}";
                 Console.WriteLine(message);
-                File.AppendAllText(LogFilePath, message + Environment.NewLine);
+                File.AppendAllText(logFilePath, message + Environment.NewLine);
             }
         }
 
@@ -62,7 +62,7 @@ public class SynchronizeDirectory
             var directoryName = Path.GetFileName(sourceDirectory);
             var replicaDirectory = Path.Combine(replicaPath, directoryName);
 
-            Synchronize(sourceDirectory, replicaDirectory, LogFilePath);
+            Synchronize(sourceDirectory, replicaDirectory, logFilePath);
         }
 
         // Delete subdirectories in replica that are not in source
@@ -74,9 +74,9 @@ public class SynchronizeDirectory
             if (!Directory.Exists(sourceDirectory))
             {
                 Directory.Delete(replicaDirectory, true);
-                var message = $"Deleted directory: {replicaDirectory}";
+                var message = $"{DateTime.Now} - Deleted directory: {replicaDirectory}";
                 Console.WriteLine(message);
-                File.AppendAllText(LogFilePath, message + Environment.NewLine);
+                File.AppendAllText(logFilePath, message + Environment.NewLine);
             }
         }
     }
